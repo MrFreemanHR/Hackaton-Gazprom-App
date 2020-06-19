@@ -1,0 +1,47 @@
+version: "3"
+
+services:
+  webserver:
+    build: 
+      context: ./bin/webserver
+    container_name: 'gazprom-webserver'
+    restart: 'always'
+    ports:
+      - "9999:80"
+      - "9998:443"
+      - "9997:8000"
+    links: 
+      - mysql
+    volumes: 
+      - ./front-end/:/var/www/html/front-end
+      - ./back-end/:/var/www/html/back-end
+      - ${PHP_INI-./config/php/php.ini}:/usr/local/etc/php/php.ini
+      - ${VHOSTS_DIR-./config/vhosts}:/etc/apache2/sites-enabled
+      - ${LOG_DIR-./logs/apache2}:/var/log/apache2
+  mysql:
+    build: ./bin/mysql
+    container_name: 'gazprom-mysql'
+    restart: 'always'
+    ports:
+      - "3306:3306"
+    volumes: 
+      - ${MYSQL_DATA_DIR-./data/mysql}:/var/lib/mysql
+      - ${MYSQL_LOG_DIR-./logs/mysql}:/var/log/mysql
+      - ./config/mysql/mysql.cnf:/etc/mysql/conf.d/mysql.cnf
+    environment:
+      MYSQL_ROOT_PASSWORD: JKjZ3AQbnc
+      MYSQL_DATABASE: png
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: JTLd33cyvv
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: 'gazprom-phpmyadmin'
+    links:
+      - mysql
+    environment:
+      PMA_HOST: mysql
+      PMA_PORT: 3306
+    ports:
+      - '8080:80'
+    volumes: 
+      - /sessions
