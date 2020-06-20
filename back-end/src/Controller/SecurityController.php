@@ -34,21 +34,26 @@ class SecurityController extends AbstractController
 
     /**
      * @Route("/api/login", name="api_login")
-     * @Method("POST")
+     * 
      */
     public function api_login(UserPasswordEncoderInterface $passwordEncoder, Request $request, UserAuthenticator $authenticator, GuardAuthenticatorHandler $guardHandler)
     {
-        if ((!$request->request->has('email')) or (!$request->request->has('password')))
+        if ((!$request->query->has('email')) or (!$request->query->has('password')))
             return new Response("empty fields", 400);
-        $user = $this->getDoctrine()->getRepository(User::class)->findBy(['email' => $request->request->get('email')]);
+        $user = $this->getDoctrine()->getRepository(User::class)->findBy(['email' => $request->query->get('email')]);
         if (!$user)
             return new Response("invalid login", 403);
-        $guardHandler->authenticateUserAndHandleSuccess(
-            $user[0],          // the User object you just created
-            $request,
-            $authenticator, // authenticator whose onAuthenticationSuccess you want to use
-            'main'          // the name of your firewall in security.yaml
-        );
+        if ($passwordEncoder->isPasswordValid($user[0], $request->query->get('password')))
+        {
+            $guardHandler->authenticateUserAndHandleSuccess(
+                $user[0],          // the User object you just created
+                $request,
+                $authenticator, // authenticator whose onAuthenticationSuccess you want to use
+                'main'          // the name of your firewall in security.yaml
+            );
+        }
+        else
+            return new Response("invalid password", 403);
         return new Response("authenticated", 200);
     }
 
