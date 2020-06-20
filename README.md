@@ -6,7 +6,7 @@
 **Морозов Никита** - Back-end программист     
 **Чумаян Борис** - Front-end программист    
 **Приставка Екатерина** - Концептуальный дизайнер     
-**Меликшаева Евгения** - UI/UX дизайнер      
+**Меликшаева Евгения** - UI/UX дизайнер       
 
 ##### Инструкция по запуску Ubuntu/Debian
 1. git clone http://git.trex-studio.ru/mrfreemanhr/digitalhackaton-gazpromcontainer
