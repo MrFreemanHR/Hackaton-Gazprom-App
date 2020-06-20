@@ -202,7 +202,8 @@ class Ticket
             'creator'   => $this->creator,
             'votesFor'  => count($this->votesFor),
             'votesAgainst' => count($this->votesAgainst),
-            'state'     => $this->state
+            'state'     => $this->state,
+            'id'        => $this->id,
         ];
     }
 }

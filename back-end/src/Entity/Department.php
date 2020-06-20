@@ -35,7 +35,10 @@ class Department
     /**
      * @ORM\Column(type="json", nullable=true)
      */
-    private $managment = [];
+    private $managment = [
+        "opened"    => [],
+        "closed"    => []
+    ];
 
     /**
      * @ORM\Column(type="json")
