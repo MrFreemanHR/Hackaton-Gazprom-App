@@ -16,11 +16,15 @@ class DivisionController extends AbstractController
      */
     public function index()
     {
+    	$response = new Response();
+        $response->headers->set("Access-Control-Allow-Origin", "*");
         $divisions = $this->getDoctrine()->getRepository(Division::class)->findAll();
         $ready_divisions = [];
         foreach ($divisions as $value) {
         	$ready_divisions[$value->getName()] = $value->getId();
         }
-        return new Response(json_encode($ready_divisions, JSON_UNESCAPED_UNICODE), 200);
+        $response->setContent(json_encode($ready_divisions, JSON_UNESCAPED_UNICODE));
+        $response->setStatusCode(200);
+        return $response; 
     }
 }

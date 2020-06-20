@@ -38,11 +38,21 @@ class SecurityController extends AbstractController
      */
     public function api_login(UserPasswordEncoderInterface $passwordEncoder, Request $request, UserAuthenticator $authenticator, GuardAuthenticatorHandler $guardHandler)
     {
+        $response = new Response();
+        $response->headers->set("Access-Control-Allow-Origin", "*");
         if ((!$request->query->has('email')) or (!$request->query->has('password')))
-            return new Response("empty fields", 400);
+        {
+            $response->setContent("empty fields");
+            $response->setStatusCode(400);
+            return $response;       
+        }
         $user = $this->getDoctrine()->getRepository(User::class)->findBy(['email' => $request->query->get('email')]);
         if (!$user)
-            return new Response("invalid login", 403);
+        {
+            $response->setContent("invalid login");
+            $response->setStatusCode(403);
+            return $response; 
+        }
         if ($passwordEncoder->isPasswordValid($user[0], $request->query->get('password')))
         {
             $guardHandler->authenticateUserAndHandleSuccess(
@@ -53,8 +63,14 @@ class SecurityController extends AbstractController
             );
         }
         else
-            return new Response("invalid password", 403);
-        return new Response("authenticated", 200);
+        {
+            $response->setContent("invalid password");
+            $response->setStatusCode(403);
+            return $response; 
+        }
+        $response->setContent("authenticated");
+        $response->setStatusCode(200);
+        return $response; 
     }
 
     /**

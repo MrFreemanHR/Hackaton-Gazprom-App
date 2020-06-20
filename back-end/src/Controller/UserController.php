@@ -36,15 +36,24 @@ class UserController extends AbstractController
     	$fields['email'] = $request->query->get('email');
     	$fields['password'] = $request->query->get('password');
     	$fields['passagain'] = $request->query->get('passagain');
-    	// dd($fields);
+    	$response = new Response();
+    	$response->headers->set("Access-Control-Allow-Origin", "*");
     	foreach ($fields as $value) {
     		if ($value == "")
-    			return new Response("empty field", 400);		// If there is one or more empty fields
+    		{
+    			$response->setContent("empty field");
+    			$response->setStatusCode(400);
+    			return $response;		// If there is one or more empty fields
+    		}
     	}
     	# Checking for existing user with this email
     	$user = $this->getDoctrine()->getRepository(User::class)->findBy(['email' => $fields['email']]);
     	if ($user)
-    		return new Response("already registred", 409);		// If this email is already registred
+    	{
+    		$response->setContent("already registred");
+			$response->setStatusCode(409);
+    		return $response;		// If this email is already registred
+    	}
     	# Create User entity object
     	$user = new User;
     	$user->setName($fields['name']);
@@ -63,6 +72,8 @@ class UserController extends AbstractController
     	$manager->persist($user);
     	$manager->flush();
     	# Return answer
-        return new Response("registred", 200);
+    	$response->setContent("registred");
+		$response->setStatusCode(200);
+        return $response;
     }
 }
