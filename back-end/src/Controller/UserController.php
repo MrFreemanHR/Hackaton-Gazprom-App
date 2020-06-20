@@ -35,6 +35,7 @@ class UserController extends AbstractController
     	$fields['division'] = $request->query->get('division');
     	$fields['email'] = $request->query->get('email');
     	$fields['password'] = $request->query->get('password');
+    	$fields['passagain'] = $request->query->get('passagain');
     	// dd($fields);
     	foreach ($fields as $value) {
     		if ($value == "")
